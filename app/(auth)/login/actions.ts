@@ -23,24 +23,35 @@ async function getRateLimitKey(): Promise<string> {
 
 export async function loginWithGoogle(formData: FormData) {
   try {
+    console.log('[AUTH DEBUG] Starting loginWithGoogle')
+
     // レート制限チェック（ログイン試行: 10回/5分）
     const rateLimitKey = await getRateLimitKey()
+    console.log('[AUTH DEBUG] Rate limit key:', rateLimitKey)
+
     if (!checkRateLimit(rateLimitKey, 10, 300000)) {
       throw new RateLimitError()
     }
 
     // 入力データの取得とサニタイゼーション
     const rawRedirect = sanitizeInput(formData.get('redirect'))
+    console.log('[AUTH DEBUG] Raw redirect:', rawRedirect)
 
     // リダイレクト先の検証
     const validatedRedirect = rawRedirect ? validateData(redirectSchema, rawRedirect) : '/courses'
+    console.log('[AUTH DEBUG] Validated redirect:', validatedRedirect)
 
     const supabase = await createClient()
+
+    const siteUrl = getURL()
+    const redirectTo = `${siteUrl}auth/callback?redirect=${encodeURIComponent(validatedRedirect || '')}`
+    console.log('[AUTH DEBUG] Site URL:', siteUrl)
+    console.log('[AUTH DEBUG] Redirect To:', redirectTo)
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${getURL()}/auth/callback?redirect=${encodeURIComponent(validatedRedirect || '')}`,
+        redirectTo,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -48,14 +59,21 @@ export async function loginWithGoogle(formData: FormData) {
       },
     })
 
+    console.log('[AUTH DEBUG] OAuth response - data:', data)
+    console.log('[AUTH DEBUG] OAuth response - error:', error)
+
     if (error) {
       console.error('Google OAuth エラー:', error)
       redirect('/login?error=oauth_error')
     }
 
     if (data.url) {
+      console.log('[AUTH DEBUG] Redirecting to OAuth URL:', data.url)
       redirect(data.url)
     }
+
+    console.log('[AUTH DEBUG] No URL returned from OAuth')
+    redirect('/login?error=no_url')
   } catch (error) {
     if (error instanceof ValidationError) {
       console.error('Login validation error:', error)
