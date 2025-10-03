@@ -738,18 +738,6 @@ export async function GET(request: NextRequest) {
 4. **RLS**: すべてのテーブルでRow Level Securityを有効化
 5. **キャッシュ**: 認証が必要なページでは `revalidate = 0` を設定
 
-## 実装完了ログ
-
-### チケット06: 視聴進捗管理・表示機能 [×] 完了
-**実装日**: 2025-09-27
-**実装内容**:
-- 進捗計算ユーティリティ (`lib/progress.ts`)
-- 進捗表示コンポーネント (`components/features/CourseProgress.tsx`)
-- 進捗ダッシュボード (`components/features/ProgressDashboard.tsx`)
-- 進捗チャート (`components/features/ProgressChart.tsx`)
-- ダッシュボードページ (`app/dashboard/page.tsx`)
-- CourseCard進捗表示機能追加
-- ヘッダーナビゲーションにダッシュボードリンク追加
 
 **機能詳細**:
 - 講座全体・セクション別・レッスン別の進捗計算
@@ -758,20 +746,6 @@ export async function GET(request: NextRequest) {
 - 学習統計（受講中講座数、完了講座数、総レッスン数、完了レッスン数）
 - レスポンシブデザイン対応
 - 認証済みユーザーのみアクセス可能（`/dashboard`ページ）
-
-### チケット07: 検索機能 [×] 完了
-**実装日**: 2025-09-27
-**実装内容**:
-- 検索ユーティリティ関数 (`lib/search.ts`)
-- debounceフック (`hooks/useDebounce.ts`)
-- 検索バーコンポーネント (`components/features/SearchBar.tsx`)
-- 検索結果コンポーネント (`components/features/SearchResults.tsx`)
-- 検索フィルターコンポーネント (`components/features/SearchFilters.tsx`)
-- 検索ページ (`app/search/page.tsx`)
-- ヘッダーに検索バー統合
-- データベース検索スキーマ (`database_search_schema.sql`)
-
-**機能詳細**:
 - 講座・レッスンのテキスト検索（title, description対応）
 - リアルタイム検索候補表示（debounce最適化）
 - カテゴリ、再生時間、料金フィルター
@@ -779,10 +753,6 @@ export async function GET(request: NextRequest) {
 - レスポンシブデザイン対応
 - SEOフレンドリーなURL設計
 - 検索候補のキーボードナビゲーション対応
-
-### チケット08: 管理画面・コンテンツ管理 [×] 完了
-**実装日**: 2025-09-27
-**実装内容**:
 - 管理者認証・認可システム (`lib/admin.ts`)
 - 管理画面ダッシュボード (`components/admin/AdminDashboard.tsx`)
 - 講座管理コンポーネント (`components/admin/CourseList.tsx`, `CourseForm.tsx`)
@@ -790,8 +760,6 @@ export async function GET(request: NextRequest) {
 - 講座管理用Server Actions (`app/admin/courses/actions.ts`)
 - データベース管理者スキーマ (`database_admin_schema.sql`)
 - ヘッダーに管理者用リンク追加
-
-**機能詳細**:
 - Row Level Security による厳密なアクセス制御
 - 管理者のみアクセス可能な管理画面
 - 講座の作成・編集・削除機能
